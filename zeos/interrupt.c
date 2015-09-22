@@ -85,6 +85,8 @@ void setIdt()
 
   setInterruptHandler(33, keyboard_handler, 0);
 
+  setTrapHandler(0x80, system_call_handler, 3);
+
   /* ADD INITIALIZATION CODE FOR INTERRUPT VECTOR */
 
   set_idt_reg(&idtR);
@@ -99,10 +101,10 @@ void keyboard_routine(){
 
   if(mob == 0){
 
-    mask = 0x3F;
+    mask = 0x7F;
     key = key & mask;
 
     key = char_map[key] == '\0' ? 'C' : char_map[key];
-    printc_xy(10,10, key);
+    printc_xy(0,13, key);
   }
 }

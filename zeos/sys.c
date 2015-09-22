@@ -45,3 +45,13 @@ int sys_fork()
 void sys_exit()
 {  
 }
+
+int sys_write(int fd, char * buffer, int size){
+  //fd: file descriptor. In this delivery it must always be 1.
+  //buffer: pointer to the bytes.
+  //size: number of bytes.
+  //return ’ Negative number in case of error (specifying the kind of error) and
+  //the number of bytes written if OK.
+
+}
+

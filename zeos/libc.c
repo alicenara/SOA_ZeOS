@@ -43,3 +43,7 @@ int strlen(char *a)
   return i;
 }
 
+int write (int fd, char * buffer, int size){
+  
+}
+
