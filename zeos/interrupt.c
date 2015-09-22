@@ -84,6 +84,7 @@ void setIdt()
   set_handlers();
 
   setInterruptHandler(33, keyboard_handler, 0);
+  setInterruptHandler(33, clock_handler, 0);
 
   setTrapHandler(0x80, system_call_handler, 3);
 
@@ -105,4 +106,8 @@ void keyboard_routine(){
     key = char_map[key] == '\0' ? 'C' : char_map[key];
     printc_xy(0,13, key);
   }
+}
+
+void clock_routine(){
+  zeos_show_clock();
 }
