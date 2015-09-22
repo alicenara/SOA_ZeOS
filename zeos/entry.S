@@ -4,6 +4,8 @@
 
 #include <asm.h>
 #include <segment.h>
+#define ENOSYS -38
+#define MAX_SYSCALL 4
 
 
 /**************************************************/
