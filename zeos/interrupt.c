@@ -97,14 +97,13 @@ void setIdt()
 
 void keyboard_routine(){
   unsigned char key = inb(0x60);
-  unsigned char mask;
-  int mob = key >> 7;
+  int mob = key & 0x80;
 
   if(!mob){
-    key = key << 1;
+    key = key & 0x7F;	
 
     key = char_map[key] == '\0' ? 'C' : char_map[key];
-    printc_xy(0,13, key);
+    printc_xy(65,3, key);
   }
 }
 

@@ -31,7 +31,7 @@
 00000000000i[      ]   SB16 support: no
 00000000000i[      ]   USB support: no
 00000000000i[      ]   VGA extension support: vbe
-00000000000i[MEM0  ] allocated memory at 0xb24f2008. after alignment, vector=0xb24f3000
+00000000000i[MEM0  ] allocated memory at 0xb2554008. after alignment, vector=0xb2555000
 00000000000i[MEM0  ] 16.00MB
 00000000000i[MEM0  ] mem block size = 0x00100000, blocks=16
 00000000000i[MEM0  ] rom at 0xfffe0000/131072 ('/home2/users/alumnes/1172562/SOA_ZeOS/mybochs/share/bochs/BIOS-bochs-latest')
@@ -41,7 +41,7 @@
 00000000000i[DEV   ] PIIX3 PCI-to-ISA bridge present at device 1, function 0
 00000000000i[PLUGIN] init_dev of 'cmos' plugin device by virtual method
 00000000000i[CMOS  ] Using local time for initial clock
-00000000000i[CMOS  ] Setting initial clock to: Tue Sep 22 15:13:49 2015 (time0=1442927629)
+00000000000i[CMOS  ] Setting initial clock to: Tue Sep 22 15:41:04 2015 (time0=1442929264)
 00000000000i[PLUGIN] init_dev of 'dma' plugin device by virtual method
 00000000000i[DMA   ] channel 4 used by cascade
 00000000000i[PLUGIN] init_dev of 'pic' plugin device by virtual method
@@ -166,7 +166,7 @@
 00001398971i[BIOS  ] Firmware waking vector 0xff00cc
 00001400766i[PCI   ] i440FX PMC write to PAM register 59 (TLB Flush)
 00001401489i[BIOS  ] bios_table_cur_addr: 0x000fa6c4
-00001750768i[XGUI  ] charmap update. Font Height is 16
+00001827472i[XGUI  ] charmap update. Font Height is 16
 00029625339i[BIOS  ] Booting from 0000:7c00
 00045296403i[FLOPPY] partial read() on floppy image returns 260/512
 00045340847i[FLOPPY] read() on floppy image returns 0
@@ -200,54 +200,25 @@
 00046587634i[FLOPPY] read() on floppy image returns 0
 00046632078i[FLOPPY] read() on floppy image returns 0
 00046676522i[FLOPPY] read() on floppy image returns 0
-00184972000i[KBD   ] internal keyboard buffer full, ignoring scancode.(a0)
-00184972000i[KBD   ] internal keyboard buffer full, ignoring scancode.(20)
-00187140000i[KBD   ] internal keyboard buffer full, ignoring scancode.(a0)
-00187140000i[KBD   ] internal keyboard buffer full, ignoring scancode.(20)
-00188356000i[KBD   ] internal keyboard buffer full, ignoring scancode.(1f)
-00189360000i[KBD   ] internal keyboard buffer full, ignoring scancode.(1e)
-00191440000i[KBD   ] internal keyboard buffer full, ignoring scancode.(a0)
-00200088000i[KBD   ] internal keyboard buffer full, ignoring scancode.(39)
-00212388000i[KBD   ] internal keyboard buffer full, ignoring scancode.(9f)
-00212392000i[KBD   ] internal keyboard buffer full, ignoring scancode.(20)
-00212392000i[KBD   ] internal keyboard buffer full, ignoring scancode.(9e)
-00212392000i[KBD   ] internal keyboard buffer full, ignoring scancode.(b9)
-00225712000i[KBD   ] internal keyboard buffer full, ignoring scancode.(a0)
-00242024000i[KBD   ] internal keyboard buffer full, ignoring scancode.(18)
-00251240000i[KBD   ] internal keyboard buffer full, ignoring scancode.(12)
-00258020000i[KBD   ] internal keyboard buffer full, ignoring scancode.(13)
-00266684000i[KBD   ] internal keyboard buffer full, ignoring scancode.(98)
-00266688000i[KBD   ] internal keyboard buffer full, ignoring scancode.(24)
-00266688000i[KBD   ] internal keyboard buffer full, ignoring scancode.(92)
-00272664000i[KBD   ] internal keyboard buffer full, ignoring scancode.(93)
-00274752000i[KBD   ] internal keyboard buffer full, ignoring scancode.(17)
-00275264000i[KBD   ] internal keyboard buffer full, ignoring scancode.(18)
-00277868000i[KBD   ] internal keyboard buffer full, ignoring scancode.(a4)
-00283940000i[KBD   ] internal keyboard buffer full, ignoring scancode.(11)
-00287596000i[KBD   ] internal keyboard buffer full, ignoring scancode.(97)
-00295232000i[KBD   ] internal keyboard buffer full, ignoring scancode.(98)
-00298368000i[KBD   ] internal keyboard buffer full, ignoring scancode.(21)
-00307052000i[KBD   ] internal keyboard buffer full, ignoring scancode.(a1)
-00308996000i[KBD   ] internal keyboard buffer full, ignoring scancode.(91)
-00554039153i[      ] Ctrl-C detected in signal handler.
-00554039153i[      ] dbg: Quit
-00554039153i[CPU0  ] CPU is in protected mode (active)
-00554039153i[CPU0  ] CS.mode = 32 bit
-00554039153i[CPU0  ] SS.mode = 32 bit
-00554039153i[CPU0  ] EFER   = 0x00000000
-00554039153i[CPU0  ] | EAX=0011bffc  EBX=0000350e  ECX=0000022e  EDX=00007dfa
-00554039153i[CPU0  ] | ESP=0011bfec  EBP=0011bfec  ESI=000e0200  EDI=00003ff4
-00554039153i[CPU0  ] | IOPL=0 id vip vif ac vm rf nt of df IF tf sf zf af PF cf
-00554039153i[CPU0  ] | SEG sltr(index|ti|rpl)     base    limit G D
-00554039153i[CPU0  ] |  CS:0023( 0004| 0|  3) 00000000 ffffffff 1 1
-00554039153i[CPU0  ] |  DS:002b( 0005| 0|  3) 00000000 ffffffff 1 1
-00554039153i[CPU0  ] |  SS:002b( 0005| 0|  3) 00000000 ffffffff 1 1
-00554039153i[CPU0  ] |  ES:002b( 0005| 0|  3) 00000000 ffffffff 1 1
-00554039153i[CPU0  ] |  FS:0000( 0003| 0|  0) 00000000 ffffffff 1 1
-00554039153i[CPU0  ] |  GS:0000( 0003| 0|  0) 00000000 ffffffff 1 1
-00554039153i[CPU0  ] | EIP=00100003 (00100003)
-00554039153i[CPU0  ] | CR0=0x80000011 CR2=0x00000000
-00554039153i[CPU0  ] | CR3=0x0002a000 CR4=0x00000000
-00554039153i[CMOS  ] Last time is 1442927767 (Tue Sep 22 15:16:07 2015)
-00554039153i[XGUI  ] Exit
-00554039153i[SIM   ] quit_sim called with exit code 0
+35815497207i[      ] Ctrl-C detected in signal handler.
+35815497208i[      ] dbg: Quit
+35815497208i[CPU0  ] CPU is in protected mode (active)
+35815497208i[CPU0  ] CS.mode = 32 bit
+35815497208i[CPU0  ] SS.mode = 32 bit
+35815497208i[CPU0  ] EFER   = 0x00000000
+35815497208i[CPU0  ] | EAX=0011bffc  EBX=0000350e  ECX=0000022e  EDX=00007dfa
+35815497208i[CPU0  ] | ESP=0011bfec  EBP=0011bfec  ESI=000e0200  EDI=00003ff4
+35815497208i[CPU0  ] | IOPL=0 id vip vif ac vm rf nt of df IF tf sf zf af PF cf
+35815497208i[CPU0  ] | SEG sltr(index|ti|rpl)     base    limit G D
+35815497208i[CPU0  ] |  CS:0023( 0004| 0|  3) 00000000 ffffffff 1 1
+35815497208i[CPU0  ] |  DS:002b( 0005| 0|  3) 00000000 ffffffff 1 1
+35815497208i[CPU0  ] |  SS:002b( 0005| 0|  3) 00000000 ffffffff 1 1
+35815497208i[CPU0  ] |  ES:002b( 0005| 0|  3) 00000000 ffffffff 1 1
+35815497208i[CPU0  ] |  FS:0000( 0000| 0|  0) 00000000 00000000 0 0
+35815497208i[CPU0  ] |  GS:0000( 0000| 0|  0) 00000000 00000000 0 0
+35815497208i[CPU0  ] | EIP=00100003 (00100003)
+35815497208i[CPU0  ] | CR0=0x80000011 CR2=0x00000000
+35815497208i[CPU0  ] | CR3=0x0002a000 CR4=0x00000000
+35815497208i[CMOS  ] Last time is 1442938217 (Tue Sep 22 18:10:17 2015)
+35815497208i[XGUI  ] Exit
+35815497208i[SIM   ] quit_sim called with exit code 0
