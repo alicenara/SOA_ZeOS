@@ -4,7 +4,7 @@
 
 #include <asm.h>
 #include <segment.h>
-#define ENOSYS -38
+#define ENOSYS 38
 #define MAX_SYSCALL 4
 
 
@@ -54,7 +54,6 @@
       movl %edx, %es
 
 #define RESTORE_ALL \
-
       popl %ebx; \
       popl %ecx; \
       popl %edx; \
@@ -68,7 +67,6 @@
       popl %gs
 
 #define EOI \
-
       movb $0x20, %al; \
       outb %al, $0x20;
 
