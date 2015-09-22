@@ -41,7 +41,7 @@
 00000000000i[DEV   ] PIIX3 PCI-to-ISA bridge present at device 1, function 0
 00000000000i[PLUGIN] init_dev of 'cmos' plugin device by virtual method
 00000000000i[CMOS  ] Using local time for initial clock
-00000000000i[CMOS  ] Setting initial clock to: Mon Sep 21 04:43:21 2015 (time0=1442835801)
+00000000000i[CMOS  ] Setting initial clock to: Mon Sep 21 23:10:37 2015 (time0=1442902237)
 00000000000i[PLUGIN] init_dev of 'dma' plugin device by virtual method
 00000000000i[DMA   ] channel 4 used by cascade
 00000000000i[PLUGIN] init_dev of 'pic' plugin device by virtual method
@@ -127,26 +127,189 @@
 00000000000i[PLUGIN] reset of 'extfpuirq' plugin device by virtual method
 00000000000i[PLUGIN] reset of 'parallel' plugin device by virtual method
 00000000000i[PLUGIN] reset of 'serial' plugin device by virtual method
-00000000000p[      ] >>PANIC<< SIGNAL 2 caught
-00000000000i[CPU0  ] CPU is in real mode (active)
-00000000000i[CPU0  ] CS.mode = 16 bit
-00000000000i[CPU0  ] SS.mode = 16 bit
-00000000000i[CPU0  ] EFER   = 0x00000000
-00000000000i[CPU0  ] | EAX=00000000  EBX=00000000  ECX=00000000  EDX=00000000
-00000000000i[CPU0  ] | ESP=00000000  EBP=00000000  ESI=00000000  EDI=00000000
-00000000000i[CPU0  ] | IOPL=0 id vip vif ac vm rf nt of df if tf sf zf af pf cf
-00000000000i[CPU0  ] | SEG sltr(index|ti|rpl)     base    limit G D
-00000000000i[CPU0  ] |  CS:f000( 1e00| 0|  0) ffff0000 0000ffff 0 0
-00000000000i[CPU0  ] |  DS:0000( 0000| 0|  0) 00000000 0000ffff 0 0
-00000000000i[CPU0  ] |  SS:0000( 0000| 0|  0) 00000000 0000ffff 0 0
-00000000000i[CPU0  ] |  ES:0000( 0000| 0|  0) 00000000 0000ffff 0 0
-00000000000i[CPU0  ] |  FS:0000( 0000| 0|  0) 00000000 0000ffff 0 0
-00000000000i[CPU0  ] |  GS:0000( 0000| 0|  0) 00000000 0000ffff 0 0
-00000000000i[CPU0  ] | EIP=0000fff0 (0000fff0)
-00000000000i[CPU0  ] | CR0=0x60000010 CR2=0x00000000
-00000000000i[CPU0  ] | CR3=0x00000000 CR4=0x00000000
-00000000000i[CPU0  ] 0x0000fff0>> jmpf 0xf000:e05b : EA5BE000F0
-00000000000i[CMOS  ] Last time is 1442835801 (Mon Sep 21 04:43:21 2015)
-00000000000i[XGUI  ] Exit
-00000000000i[      ] restoring default signal behavior
-00000000000i[SIM   ] quit_sim called with exit code 1
+00000004661i[BIOS  ] $Revision: 12579 $ $Date: 2014-12-26 11:31:39 +0100 (Fr, 26. Dez 2014) $
+00000318049i[KBD   ] reset-disable command received
+00000320818i[BIOS  ] Starting rombios32
+00000321256i[BIOS  ] Shutdown flag 0
+00000321840i[BIOS  ] ram_size=0x01000000
+00000322261i[BIOS  ] ram_end=16MB
+00000362771i[BIOS  ] Found 1 cpu(s)
+00000376975i[BIOS  ] bios_table_addr: 0x000fa498 end=0x000fcc00
+00000704770i[PCI   ] i440FX PMC write to PAM register 59 (TLB Flush)
+00001032699i[P2ISA ] PCI IRQ routing: PIRQA# set to 0x0b
+00001032718i[P2ISA ] PCI IRQ routing: PIRQB# set to 0x09
+00001032737i[P2ISA ] PCI IRQ routing: PIRQC# set to 0x0b
+00001032756i[P2ISA ] PCI IRQ routing: PIRQD# set to 0x09
+00001032766i[P2ISA ] write: ELCR2 = 0x0a
+00001033536i[BIOS  ] PIIX3/PIIX4 init: elcr=00 0a
+00001041217i[BIOS  ] PCI: bus=0 devfn=0x00: vendor_id=0x8086 device_id=0x1237 class=0x0600
+00001043496i[BIOS  ] PCI: bus=0 devfn=0x08: vendor_id=0x8086 device_id=0x7000 class=0x0601
+00001045614i[BIOS  ] PCI: bus=0 devfn=0x09: vendor_id=0x8086 device_id=0x7010 class=0x0101
+00001045839i[PIDE  ] new BM-DMA address: 0xc000
+00001046455i[BIOS  ] region 4: 0x0000c000
+00001048489i[BIOS  ] PCI: bus=0 devfn=0x0b: vendor_id=0x8086 device_id=0x7113 class=0x0680
+00001048721i[ACPI  ] new irq line = 11
+00001048733i[ACPI  ] new irq line = 9
+00001048758i[ACPI  ] new PM base address: 0xb000
+00001048772i[ACPI  ] new SM base address: 0xb100
+00001048800i[PCI   ] setting SMRAM control register to 0x4a
+00001212893i[CPU0  ] Enter to System Management Mode
+00001212904i[CPU0  ] RSM: Resuming from System Management Mode
+00001376925i[PCI   ] setting SMRAM control register to 0x0a
+00001391791i[BIOS  ] MP table addr=0x000fa570 MPC table addr=0x000fa4a0 size=0xc8
+00001393613i[BIOS  ] SMBIOS table addr=0x000fa580
+00001395781i[BIOS  ] ACPI tables: RSDP addr=0x000fa6a0 ACPI DATA addr=0x00ff0000 size=0xf72
+00001398971i[BIOS  ] Firmware waking vector 0xff00cc
+00001400766i[PCI   ] i440FX PMC write to PAM register 59 (TLB Flush)
+00001401489i[BIOS  ] bios_table_cur_addr: 0x000fa6c4
+00002816232i[XGUI  ] charmap update. Font Height is 16
+00029625339i[BIOS  ] Booting from 0000:7c00
+00045296403i[FLOPPY] partial read() on floppy image returns 260/512
+00045340847i[FLOPPY] read() on floppy image returns 0
+00045385291i[FLOPPY] read() on floppy image returns 0
+00045429735i[FLOPPY] read() on floppy image returns 0
+00045474179i[FLOPPY] read() on floppy image returns 0
+00045518623i[FLOPPY] read() on floppy image returns 0
+00045563067i[FLOPPY] read() on floppy image returns 0
+00045608687i[FLOPPY] read() on floppy image returns 0
+00045653131i[FLOPPY] read() on floppy image returns 0
+00045697575i[FLOPPY] read() on floppy image returns 0
+00045742019i[FLOPPY] read() on floppy image returns 0
+00045786463i[FLOPPY] read() on floppy image returns 0
+00045830907i[FLOPPY] read() on floppy image returns 0
+00045875351i[FLOPPY] read() on floppy image returns 0
+00045919795i[FLOPPY] read() on floppy image returns 0
+00045964239i[FLOPPY] read() on floppy image returns 0
+00046008683i[FLOPPY] read() on floppy image returns 0
+00046053127i[FLOPPY] read() on floppy image returns 0
+00046097571i[FLOPPY] read() on floppy image returns 0
+00046142015i[FLOPPY] read() on floppy image returns 0
+00046186459i[FLOPPY] read() on floppy image returns 0
+00046230903i[FLOPPY] read() on floppy image returns 0
+00046275347i[FLOPPY] read() on floppy image returns 0
+00046319791i[FLOPPY] read() on floppy image returns 0
+00046364235i[FLOPPY] read() on floppy image returns 0
+00046409858i[FLOPPY] read() on floppy image returns 0
+00046454302i[FLOPPY] read() on floppy image returns 0
+00046498746i[FLOPPY] read() on floppy image returns 0
+00046543190i[FLOPPY] read() on floppy image returns 0
+00046587634i[FLOPPY] read() on floppy image returns 0
+00046632078i[FLOPPY] read() on floppy image returns 0
+00046676522i[FLOPPY] read() on floppy image returns 0
+01435500000i[XGUI  ] system RESET callback
+01435500000i[SYS   ] bx_pc_system_c::Reset(HARDWARE) called
+01435500000i[CPU0  ] cpu hardware reset
+01435500000i[APIC0 ] allocate APIC id=0 (MMIO enabled) to 0x0000fee00000
+01435500000i[CPU0  ] CPUID[0x00000000]: 00000005 756e6547 6c65746e 49656e69
+01435500000i[CPU0  ] CPUID[0x00000001]: 00000633 00010800 00000008 1fcbfbff
+01435500000i[CPU0  ] CPUID[0x00000002]: 00410601 00000000 00000000 00000000
+01435500000i[CPU0  ] CPUID[0x00000003]: 00000000 00000000 00000000 00000000
+01435500000i[CPU0  ] CPUID[0x00000004]: 00000000 00000000 00000000 00000000
+01435500000i[CPU0  ] CPUID[0x00000005]: 00000040 00000040 00000003 00000020
+01435500000i[PLUGIN] reset of 'pci' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'pci2isa' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'cmos' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'dma' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'pic' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'pit' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'vga' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'floppy' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'acpi' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'ioapic' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'keyboard' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'harddrv' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'pci_ide' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'unmapped' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'biosdev' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'speaker' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'extfpuirq' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'parallel' plugin device by virtual method
+01435500000i[PLUGIN] reset of 'serial' plugin device by virtual method
+01435504661i[BIOS  ] $Revision: 12579 $ $Date: 2014-12-26 11:31:39 +0100 (Fr, 26. Dez 2014) $
+01435818049i[KBD   ] reset-disable command received
+01435820818i[BIOS  ] Starting rombios32
+01435821256i[BIOS  ] Shutdown flag 0
+01435821840i[BIOS  ] ram_size=0x01000000
+01435822261i[BIOS  ] ram_end=16MB
+01435862771i[BIOS  ] Found 1 cpu(s)
+01435876975i[BIOS  ] bios_table_addr: 0x000fa498 end=0x000fcc00
+01436204770i[PCI   ] i440FX PMC write to PAM register 59 (TLB Flush)
+01436532699i[P2ISA ] PCI IRQ routing: PIRQA# set to 0x0b
+01436532718i[P2ISA ] PCI IRQ routing: PIRQB# set to 0x09
+01436532737i[P2ISA ] PCI IRQ routing: PIRQC# set to 0x0b
+01436532756i[P2ISA ] PCI IRQ routing: PIRQD# set to 0x09
+01436532766i[P2ISA ] write: ELCR2 = 0x0a
+01436533536i[BIOS  ] PIIX3/PIIX4 init: elcr=00 0a
+01436541217i[BIOS  ] PCI: bus=0 devfn=0x00: vendor_id=0x8086 device_id=0x1237 class=0x0600
+01436543496i[BIOS  ] PCI: bus=0 devfn=0x08: vendor_id=0x8086 device_id=0x7000 class=0x0601
+01436545614i[BIOS  ] PCI: bus=0 devfn=0x09: vendor_id=0x8086 device_id=0x7010 class=0x0101
+01436546455i[BIOS  ] region 4: 0x0000c000
+01436548489i[BIOS  ] PCI: bus=0 devfn=0x0b: vendor_id=0x8086 device_id=0x7113 class=0x0680
+01436548721i[ACPI  ] new irq line = 11
+01436548733i[ACPI  ] new irq line = 9
+01436548800i[PCI   ] setting SMRAM control register to 0x4a
+01436712893i[CPU0  ] Enter to System Management Mode
+01436712904i[CPU0  ] RSM: Resuming from System Management Mode
+01436876925i[PCI   ] setting SMRAM control register to 0x0a
+01436891791i[BIOS  ] MP table addr=0x000fa570 MPC table addr=0x000fa4a0 size=0xc8
+01436893613i[BIOS  ] SMBIOS table addr=0x000fa580
+01436895781i[BIOS  ] ACPI tables: RSDP addr=0x000fa6a0 ACPI DATA addr=0x00ff0000 size=0xf72
+01436898971i[BIOS  ] Firmware waking vector 0xff00cc
+01436900766i[PCI   ] i440FX PMC write to PAM register 59 (TLB Flush)
+01436901489i[BIOS  ] bios_table_cur_addr: 0x000fa6c4
+01439603784i[XGUI  ] charmap update. Font Height is 16
+01465125339i[BIOS  ] Booting from 0000:7c00
+01480796403i[FLOPPY] partial read() on floppy image returns 260/512
+01480840847i[FLOPPY] read() on floppy image returns 0
+01480885291i[FLOPPY] read() on floppy image returns 0
+01480929735i[FLOPPY] read() on floppy image returns 0
+01480974179i[FLOPPY] read() on floppy image returns 0
+01481018623i[FLOPPY] read() on floppy image returns 0
+01481063067i[FLOPPY] read() on floppy image returns 0
+01481108687i[FLOPPY] read() on floppy image returns 0
+01481153131i[FLOPPY] read() on floppy image returns 0
+01481197575i[FLOPPY] read() on floppy image returns 0
+01481242019i[FLOPPY] read() on floppy image returns 0
+01481286463i[FLOPPY] read() on floppy image returns 0
+01481330907i[FLOPPY] read() on floppy image returns 0
+01481375351i[FLOPPY] read() on floppy image returns 0
+01481419795i[FLOPPY] read() on floppy image returns 0
+01481464239i[FLOPPY] read() on floppy image returns 0
+01481508683i[FLOPPY] read() on floppy image returns 0
+01481553127i[FLOPPY] read() on floppy image returns 0
+01481597571i[FLOPPY] read() on floppy image returns 0
+01481642015i[FLOPPY] read() on floppy image returns 0
+01481686459i[FLOPPY] read() on floppy image returns 0
+01481730903i[FLOPPY] read() on floppy image returns 0
+01481775347i[FLOPPY] read() on floppy image returns 0
+01481819791i[FLOPPY] read() on floppy image returns 0
+01481864235i[FLOPPY] read() on floppy image returns 0
+01481909858i[FLOPPY] read() on floppy image returns 0
+01481954302i[FLOPPY] read() on floppy image returns 0
+01481998746i[FLOPPY] read() on floppy image returns 0
+01482043190i[FLOPPY] read() on floppy image returns 0
+01482087634i[FLOPPY] read() on floppy image returns 0
+01482132078i[FLOPPY] read() on floppy image returns 0
+01482176522i[FLOPPY] read() on floppy image returns 0
+01705048000i[CPU0  ] CPU is in protected mode (active)
+01705048000i[CPU0  ] CS.mode = 32 bit
+01705048000i[CPU0  ] SS.mode = 32 bit
+01705048000i[CPU0  ] EFER   = 0x00000000
+01705048000i[CPU0  ] | EAX=0011bffc  EBX=0000350e  ECX=0000022e  EDX=00007dfa
+01705048000i[CPU0  ] | ESP=0011bfec  EBP=0011bfec  ESI=000e0200  EDI=00003ff4
+01705048000i[CPU0  ] | IOPL=0 id vip vif ac vm rf nt of df IF tf sf zf af PF cf
+01705048000i[CPU0  ] | SEG sltr(index|ti|rpl)     base    limit G D
+01705048000i[CPU0  ] |  CS:0023( 0004| 0|  3) 00000000 ffffffff 1 1
+01705048000i[CPU0  ] |  DS:002b( 0005| 0|  3) 00000000 ffffffff 1 1
+01705048000i[CPU0  ] |  SS:002b( 0005| 0|  3) 00000000 ffffffff 1 1
+01705048000i[CPU0  ] |  ES:002b( 0005| 0|  3) 00000000 ffffffff 1 1
+01705048000i[CPU0  ] |  FS:0000( 0003| 0|  0) 00000000 ffffffff 1 1
+01705048000i[CPU0  ] |  GS:0000( 0003| 0|  0) 00000000 ffffffff 1 1
+01705048000i[CPU0  ] | EIP=00100003 (00100003)
+01705048000i[CPU0  ] | CR0=0x80000011 CR2=0x00000000
+01705048000i[CPU0  ] | CR3=0x0002a000 CR4=0x00000000
+01705048000i[CPU0  ] 0x00100003>> jmp .-2 (0x00100003) : EBFE
+01705048000i[CMOS  ] Last time is 1442902662 (Mon Sep 21 23:17:42 2015)
+01705048000i[XGUI  ] Exit
+01705048000i[      ] restoring default signal behavior
+01705048000i[SIM   ] quit_sim called with exit code 1

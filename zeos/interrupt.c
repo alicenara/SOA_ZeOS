@@ -83,10 +83,26 @@ void setIdt()
   //handlers of exceptions
   set_handlers();
 
-  setInterrumptHandler(33,keyboard_handler,0);
+  setInterruptHandler(33, keyboard_handler, 0);
 
   /* ADD INITIALIZATION CODE FOR INTERRUPT VECTOR */
 
   set_idt_reg(&idtR);
 }
 
+//service routines added
+
+void keyboard_routine(){
+  unsigned char key = inb(0x60);
+  unsigned char mask = 0x80;
+  double mob = key & mask;
+
+  if(mob == 0){
+
+    mask = 0x3F;
+    key = key & mask;
+
+    key = char_map[key] == '\0' ? 'C' : char_map[key];
+    printc_xy(10,10, key);
+  }
+}

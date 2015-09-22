@@ -69,3 +69,11 @@
 
       movb $0x20, %al; \
       outb %al, $0x20;
+
+
+ENTRY( keyboard_handler )
+      SAVE_ALL
+      EOI
+      call keyboard_routine
+      RESTORE_ALL
+      iret
