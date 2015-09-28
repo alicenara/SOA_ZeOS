@@ -46,6 +46,7 @@ int __attribute__ ((__section__(".text.main")))
   acum = 0;
   acum = add(1,2);
   acum = outer(count);
+  write(1,"pony",4);
   while (1);
   return 0;
 }
