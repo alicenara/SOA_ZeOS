@@ -10,7 +10,7 @@ int errno;
 
 void perror(){
   //fer codis error
-  write(1,"Error",5)
+  write(1,"Error",5);
 }
 
 void itoa(int a, char *b)
@@ -51,7 +51,7 @@ int strlen(char *a)
 int write (int fd, char * buffer, int size){
   int ret;
   
-  __asm__("int 0x80"
+  __asm__("int $0x80"
      : "=a" (ret)
      : "b" (fd), "c" (buffer), "d" (size), "a" (4)
      );
@@ -68,7 +68,7 @@ int write (int fd, char * buffer, int size){
 int gettime(){
   int ret;
 
-  __asm__("int 0x80"
+  __asm__("int $0x80"
      : "=a" (ret)
      : "a" (10)
      );

@@ -10,6 +10,5 @@
 
 extern TSS         tss;
 extern Descriptor* gdt;
-extern int zeos_ticks;
 
 #endif  /* __SYSTEM_H__ */

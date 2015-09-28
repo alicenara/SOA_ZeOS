@@ -12,6 +12,8 @@
 #include <mm_address.h>
 
 #include <sched.h>
+ 
+#include <variables.h>
 
 #define LECTURA 0
 #define ESCRIPTURA 1
@@ -64,17 +66,17 @@ int sys_write(int fd, char * buffer, int size){
     char mybuff[myMaxBuff];
     int numbytes = 0;
     
-    while (size >= myMaxBuff){
-      int comprovacio = copy_from_user(buffer, buff, myMaxBuff);
-      if(comprovacio){
+    while (size >= myMaxBuff || size == -1){
+      int comprovacio = copy_from_user(buffer, mybuff, size);
+      if(comprovacio){ 
         ret = comprovacio; //error, buscar codi error;
-        size = myMaxBuff;
+        size = -1;
       } else{
-        int sizeEscrit = sys_write_console(mybuff, myMaxBuff);
+        int sizeEscrit = sys_write_console(mybuff, size);
 
         if(sizeEscrit < 0){
           ret = sizeEscrit; //error, buscar codi error;
-          size = myMaxBuff;
+          size = -1;
         }else{
           numbytes += sizeEscrit;
           buffer += myMaxBuff;
@@ -82,30 +84,28 @@ int sys_write(int fd, char * buffer, int size){
         }         
       }      
     }
-    // volta final
-    int comprovacio = copy_from_user(buffer, buff, myMaxBuff);
-    if(comprovacio) ret = comprovacio; //error, buscar codi error;
-    else{
-      int sizeEscrit = sys_write_console(mybuff, myMaxBuff);
-
-      if(sizeEscrit < 0) ret = sizeEscrit; //error, buscar codi error;
+    if(size > 0){
+      // volta final
+      int comprovacio = copy_from_user(buffer, mybuff, size);
+      if(comprovacio) ret = comprovacio; //error, buscar codi error;
       else{
-        numbytes += sizeEscrit;
-        buffer += myMaxBuff;
-        size -= myMaxBuff;
+        int sizeEscrit = sys_write_console(mybuff, size);
+        numbytes += sizeEscrit; //error, buscar codi error;
       }
-    }
 
-    if (numbytes != sizeOriginal) ret = -1; //buscar codi error
-    else ret = numbytes;
+      if(ret == 0){
+        if (numbytes != sizeOriginal && ret == 0) ret = -1; //buscar codi error
+        else ret = numbytes;
+      }      
+    }
+    
   }else ret = -1; //buscar error
 
   return ret;
 
 }
 
-int sys_clock(){
+int sys_gettime(){
   return zeos_ticks;
-
 }
 

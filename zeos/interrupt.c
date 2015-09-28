@@ -9,6 +9,8 @@
 
 #include <zeos_interrupt.h>
 
+#include <variables.h>
+ 
 Gate idt[IDT_ENTRIES];
 Register    idtR;
 
@@ -109,5 +111,5 @@ void keyboard_routine(){
 
 void clock_routine(){
   zeos_show_clock();
-  zeos_ticks++;
+  //zeos_ticks++;
 }

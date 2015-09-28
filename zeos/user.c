@@ -41,12 +41,14 @@ int __attribute__ ((__section__(".text.main")))
      /* __asm__ __volatile__ ("mov %0, %%cr3"::"r" (0) ); */
 
     
-  long count, acum;
+  /*long count, acum;
   count = 75;
   acum = 0;
   acum = add(1,2);
-  acum = outer(count);
+  acum = outer(count);*/
   write(1,"pony",4);
+  write(1,"2pony2",6);
+  int i = gettime();
   while (1);
   return 0;
 }
