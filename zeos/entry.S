@@ -71,21 +71,21 @@
       outb %al, $0x20;
 
 
-ENTRY( keyboard_handler )
+ENTRY(keyboard_handler)
       SAVE_ALL
       EOI
       call keyboard_routine
       RESTORE_ALL
       iret
 
-ENTRY( clock_handler )
+ENTRY(clock_handler)
       SAVE_ALL
       EOI
       call clock_routine
       RESTORE_ALL
       iret
 
-ENTRY( system_call_handler )
+ENTRY(system_call_handler)
       SAVE_ALL                                  //Save the current context
       cmpl $0, %eax                             //Is syscall number negative?
       jl err                                    //If it is, jump to return an error

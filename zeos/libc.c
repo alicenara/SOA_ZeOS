@@ -58,7 +58,6 @@ int write (int fd, char * buffer, int size){
 
   if(ret < 0){
     errno = ret;
-    perror();
     ret = -1;
   }
 
@@ -75,7 +74,6 @@ int gettime(){
 
   if(ret < 0){
     errno = ret;
-    perror();
     ret = -1;
   }
 
