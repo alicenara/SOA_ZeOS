@@ -76,6 +76,8 @@ int __attribute__((__section__(".text.main")))
   printk("Kernel Loaded!    "); 
 
   zeos_ticks = 0;
+  init_freequeue();
+  init_readyqueue();
 
   /* Initialize hardware data */
   setGdt(); /* Definicio de la taula de segments de memoria */
