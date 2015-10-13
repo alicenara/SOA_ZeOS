@@ -63,7 +63,8 @@ void cpu_idle(void)
 
 void init_idle (void)
 {
-
+  task_struct *freequeue_s = list_head_to_task_struct(&freequeue);
+  
 }
 
 void init_task1(void)

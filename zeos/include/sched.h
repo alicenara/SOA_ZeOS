@@ -39,6 +39,9 @@ void init_task1(void);
 
 void init_idle(void);
 
+void init_freequeue (void);
+void init_readyqueue (void);
+
 void init_sched(void);
 
 struct task_struct * current();
