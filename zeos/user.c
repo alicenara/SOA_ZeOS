@@ -48,12 +48,18 @@ int __attribute__ ((__section__(".text.main")))
   acum = outer(count);*/
   write(1,"pony",4);
   write(1,"2pony2",6);
-  while(1){
+  
 char b[100];
 itoa(gettime(),b);
 write(1,b,strlen(b));
 write(1," segon(s)",9);
 write(1," ",1);
+while(1){
+  char c[100];
+itoa(getpid(),c);
+write(1,c,strlen(c));
+write(1," - PID ",6);
+
 	}
   /*char b;
   itoa(i,b);

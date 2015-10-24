@@ -5,7 +5,7 @@
 #include <asm.h>
 #include <segment.h>
 #define ENOSYS 38
-#define MAX_SYSCALL 10
+#define MAX_SYSCALL 20
 
 
 /**************************************************/
@@ -89,7 +89,7 @@ ENTRY(system_call_handler)
       SAVE_ALL                                  //Save the current context
       cmpl $0, %eax                             //Is syscall number negative?
       jl err                                    //If it is, jump to return an error
-      cmpl $MAX_SYSCALL, %eax                   //Is syscall greater than MAX_SYSCALL (10)?
+      cmpl $MAX_SYSCALL, %eax                   //Is syscall greater than MAX_SYSCALL (20)?
       jg err                                    //If it is, jump to return an error
       call *sys_call_table(, %eax, 0x04)        //Call the corresponding service routine
       jmp fin                                   //Finish

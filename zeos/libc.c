@@ -80,3 +80,34 @@ int gettime(){
   return ret;
 }
 
+int getpid(){
+  int ret;
+
+  __asm__("int $0x80"
+     : "=a" (ret)
+     : "a" (20)
+     );
+
+  if(ret < 0){
+    errno = ret;
+    ret = -1;
+  }
+
+  return ret;
+}
+
+int fork(){
+  int ret;
+
+  __asm__("int $0x80"
+     : "=a" (ret)
+     : "a" (2)
+     );
+
+  if(ret < 0){
+    errno = ret;
+    ret = -1;
+  }
+
+  return ret;
+}

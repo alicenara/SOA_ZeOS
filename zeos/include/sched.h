@@ -11,6 +11,7 @@
 
 #define NR_TASKS      10
 #define KERNEL_STACK_SIZE	1024
+#define DEFAULT_QUANTUM 10
 
 enum state_t { ST_RUN, ST_READY, ST_BLOCKED };
 
@@ -18,6 +19,9 @@ struct task_struct {
   int PID;			/* Process ID. This MUST be the first field of the struct. */
   page_table_entry * dir_pages_baseAddr;
   struct list_head list;
+  unsigned long kernel_esp;
+  enum state_t state;
+  int quantum;
 };
 
 union task_union {
@@ -28,6 +32,10 @@ union task_union {
 extern union task_union protected_tasks[NR_TASKS+2];
 extern union task_union *task; /* Vector de tasques */
 extern struct task_struct *idle_task;
+extern struct list_head freequeue;
+extern struct list_head readyqueue;
+extern int current_max_pid;
+extern int current_quantum;
 
 
 #define KERNEL_ESP(t)       	(DWord) &(t)->stack[KERNEL_STACK_SIZE]
@@ -35,8 +43,10 @@ extern struct task_struct *idle_task;
 #define INITIAL_ESP       	KERNEL_ESP(&task[1])
 
 /* Inicialitza les dades del proces inicial */
-void init_task1(void);
 
+int get_next_pid();
+
+void init_task1(void);
 void init_idle(void);
 
 void init_freequeue (void);
@@ -46,6 +56,7 @@ void init_sched(void);
 
 struct task_struct * current();
 
+void inner_task_switch(union task_union*t);
 void task_switch(union task_union*t);
 
 struct task_struct *list_head_to_task_struct(struct list_head *l);
@@ -57,6 +68,7 @@ page_table_entry * get_PT (struct task_struct *t) ;
 page_table_entry * get_DIR (struct task_struct *t) ;
 
 /* Headers for the scheduling policy */
+void schedule();
 void sched_next_rr();
 void update_process_state_rr(struct task_struct *t, struct list_head *dest);
 int needs_sched_rr();
