@@ -226,6 +226,19 @@ void init_sched()
 {
   init_freequeue();
   INIT_LIST_HEAD(&readyqueue);
+  init_sched_policy();
+}
+
+struct stats * get_task_stats(struct task_struct *t){  
+  //returns: a pointer to the statistics field in task t
+  return t->p_stats;
+
+}
+
+
+struct list_head *get_task_list(struct task_struct *t){  
+  //returns: a pointer to the list_head field in the task t
+  return t->list;
 }
 
 struct task_struct* current()
