@@ -12,22 +12,34 @@
 #include <mm_address.h>
 
 #include <sched.h>
- 
-#include <variables.h>
+
+#include <p_stats.h>
+
+#include <errno.h>
 
 #define LECTURA 0
 #define ESCRIPTURA 1
 
 int check_fd(int fd, int permissions)
 {
-  if (fd!=1) return -9; /*EBADF*/
-  if (permissions!=ESCRIPTURA) return -13; /*EACCES*/
+  if (fd!=1) return -EBADF; 
+  if (permissions!=ESCRIPTURA) return -EACCES; 
   return 0;
+}
+
+void user_to_system(void)
+{
+  update_stats(&(current()->p_stats.user_ticks), &(current()->p_stats.elapsed_total_ticks));
+}
+
+void system_to_user(void)
+{
+  update_stats(&(current()->p_stats.system_ticks), &(current()->p_stats.elapsed_total_ticks));
 }
 
 int sys_ni_syscall()
 {
-	return -38; /*ENOSYS*/
+	return -ENOSYS; 
 }
 
 int sys_getpid()
@@ -35,209 +47,193 @@ int sys_getpid()
 	return current()->PID;
 }
 
+int global_PID=1000;
+
 int ret_from_fork()
 {
   return 0;
 }
 
-int sys_fork()
+int sys_fork(void)
 {
-  /*
-  a) Get a free task_struct for the process. If there is no space for a new process, an error
-    will be returned.
-  b) Inherit system data: copy the parent’s task_union to the child. Determine whether it is
-    necessary to modify the page table of the parent to access the child’s system data. The
-    copy_data function can be used to copy.
-  c) Initialize field dir_pages_baseAddr with a new directory to store the process address
-    space using the allocate_DIR routine.
-  d) Search physical pages in which to map logical pages for data+stack of the child process
-    (using the alloc_frame function). If there is no enough free pages, an error will be
-    return.
-  e) Inherit user data:
-    i) Create new address space: Access page table of the child process through the directory 
-      field in the task_struct to initialize it (get_PT routine can be used):
-      A) Page table entries for the system code and data and for the user code can be a
-        copy of the page table entries of the parent process (they will be shared)
-      B) Page table entries for the user data+stack have to point to new allocated pages
-        which hold this region
-    ii) Copy the user data+stack pages from the parent process to the child process. The
-      child’s physical pages cannot be directly accessed because they are not mapped in
-      the parent’s page table. In addition, they cannot be mapped directly because the
-      logical parent process pages are the same. They must therefore be mapped in new
-      entries of the page table temporally (only for the copy). Thus, both pages can be
-      accessed simultaneously as follows:
-      A) Use temporal free entries on the page table of the parent. Use the set_ss_pag and
-        del_ss_pag functions.
-      B) Copy data+stack pages.
-      C) Free temporal entries in the page table and flush the TLB to really disable the
-        parent process to access the child pages.
-  f) Assign a new PID to the process. The PID must be different from its position in the
-    task_array table.
-  g) Initialize the fields of the task_struct that are not common to the child.
-  h) Think about the register or registers that will not be common in the returning of the
-    child process and modify its content in the system stack so that each one receive its
-    values when the context is restored.
-  i) Prepare the child stack with a content that emulates the result of a call to task_switch.
-    This process will be executed at some point by issuing a call to task_switch. Therefore
-    the child stack must have the same content as the task_switch expects to find, so it will
-    be able to restore its context in a known position. The stack of this new process must
-    be forged so it can be restored at some point in the future by a task_switch. In fact this
-    new process has to a) restore its hardware context and b) continue the execution of the
-    user process, so you must create a routine ret_from_fork which does exactly this. And
-    use it as the restore point like in the idle process initialization 4.4.52
-  j) Insert the new process into the ready list: readyqueue. This list will contain all processes
-    that are ready to execute but there is no processor to run them.
-  k) Return the pid of the child process.
-  */
-  //vars que necessitarem a partir de d
-
-  int pagines_data[NUM_PAG_DATA];
-  int i = 0;
-
-  //a)
-  int noMoarPCB = list_empty(&freequeue);
-  if(noMoarPCB) return -2; //error de que no hi ha pcb lliure
+  struct list_head *lhcurrent = NULL;
+  union task_union *uchild;
   
-  struct list_head *fq = list_first(&freequeue);
-  struct task_struct *child_task = list_head_to_task_struct(fq);
-  list_del(fq);
-  //b)
-  struct task_struct *parent_task = current();
-  union task_union *parent_union = (union task_union *) parent_task;
-  union task_union *child_union = (union task_union *) child_task;
-  copy_data(parent_union, child_union, sizeof(union task_union));
-  /*b) part de "Determine whether it is necessary to modify the page table of the parent 
-  to access the child’s system data."
-  Solucio: wat
-  */
-  //c)
-  allocate_DIR(child_task);
+  /* Any free task_struct? */
+  if (list_empty(&freequeue)) return -ENOMEM;
 
-  //d) data+stack = pages data
-  pagines_data[0] = alloc_frame();
-  while(i < NUM_PAG_DATA && pagines_data[i] != -1){
-    i++;
-    pagines_data[i] = alloc_frame();
-  }
-  //si no hi ha prous pàgines, a més d'error s'han d'alliberar les que s'havien agafat
-  if(pagines_data[i] == -1){
-    for (i = i; i>=0; i--){
-      free_frame(pagines_data[i]);
-    } 
-    //es torna a deixar lliure el pcb
-    list_add_tail(&(child_task->list), &freequeue);
-    return -3; //error de que no hi ha pagina lliure
-  }
-
-  //e) 
-  //  i)
-  page_table_entry* pag_child = get_PT(child_task);
-  page_table_entry* pag_parent = get_PT(parent_task);
-  //    A)system code and user data es shared
-  for (i = PAG_LOG_INIT_CODE; i < PAG_LOG_INIT_DATA; i++) {
-    set_ss_pag(pag_child, i, get_frame(pag_parent, i));
-  }
-  //    B) user data + stack no
-  for (i = 0; i < NUM_PAG_DATA; i++) {
-    set_ss_pag(pag_child, PAG_LOG_INIT_DATA+i, pagines_data[i]);
-
- //  ii)
-  //    A) creació d'espai a la part del pare per copiar dades i passarles al fill
-    unsigned int logic_addr = (i + PAG_LOG_INIT_DATA) * PAGE_SIZE;
-    set_ss_pag(pag_parent, i + PAG_LOG_INIT_DATA + NUM_PAG_DATA, pagines_data[i]);
-  //    B) còpia de les dades
-    copy_data((void *)(logic_addr), (void *)(logic_addr + (PAGE_SIZE * NUM_PAG_DATA)), PAGE_SIZE);
-  //    C)    esborrat de les dades
-    del_ss_pag(pag_parent, i + PAG_LOG_INIT_DATA + NUM_PAG_DATA);
-  }
-  //    C) bis -> esborrat de tlb
-  set_cr3(get_DIR(parent_task));
-  //f)
-  child_task->PID = get_next_pid();
-  //g)
-  child_task->state = ST_READY;
-  child_task->quantum = DEFAULT_QUANTUM;
-  //h)
-   unsigned int ebp;
-  __asm__ __volatile__(
-      "mov %%ebp,%0\n"
-      :"=g"(ebp)
-  );
-  //i)
-  unsigned int stack_stride = (ebp - (parent_task->PID))/sizeof(unsigned long);
-
-  child_union->stack[stack_stride-1] = 0; //ebp
-  child_union->stack[stack_stride] = (unsigned long)&ret_from_fork;
-  child_union->task.kernel_esp = (unsigned long)&child_union->stack[stack_stride-1];
-  //j)
-  list_add_tail(&child_task->list, &readyqueue);
-  //k)
-  return child_task->PID;
-}
-
-void sys_exit()
-{  
-}
-
-int sys_write(int fd, char * buffer, int size){
-  //fd: file descriptor. In this delivery it must always be 1.
-  //buffer: pointer to the bytes.
-  //size: number of bytes.
-  //return ’ Negative number in case of error (specifying the kind of error) and
-  //the number of bytes written if OK.
-
-  int ret = 0;
-  int myMaxBuff = 1024;
-  int sizeOriginal = size;
-
-  ret = check_fd(fd,ESCRIPTURA);
-  if(!ret && buffer == NULL) ret = -1; //buscar error
-  if(!ret && size >= 0){
-
-
-    char mybuff[myMaxBuff];
-    int numbytes = 0;
-    
-    while (size >= myMaxBuff || size == -1){
-      int comprovacio = copy_from_user(buffer, mybuff, size);
-      if(comprovacio){ 
-        ret = comprovacio; //error, buscar codi error;
-        size = -1;
-      } else{
-        int sizeEscrit = sys_write_console(mybuff, size);
-
-        if(sizeEscrit < 0){
-          ret = sizeEscrit; //error, buscar codi error;
-          size = -1;
-        }else{
-          numbytes += sizeEscrit;
-          buffer += myMaxBuff;
-          size -= myMaxBuff;
-        }         
-      }      
+  lhcurrent=list_first(&freequeue);
+  
+  list_del(lhcurrent);
+  
+  uchild=(union task_union*)list_head_to_task_struct(lhcurrent);
+  
+  /* Copy the parent's task struct to child's */
+  copy_data(current(), uchild, sizeof(union task_union));
+  
+  /* new pages dir */
+  allocate_DIR((struct task_struct*)uchild);
+  
+  /* Allocate pages for DATA+STACK */
+  int new_ph_pag, pag, i;
+  page_table_entry *process_PT = get_PT(&uchild->task);
+  for (pag=0; pag<NUM_PAG_DATA; pag++)
+  {
+    new_ph_pag=alloc_frame();
+    if (new_ph_pag!=-1) /* One page allocated */
+    {
+      set_ss_pag(process_PT, PAG_LOG_INIT_DATA_P0+pag, new_ph_pag);
     }
-    if(size > 0){
-      // volta final
-      int comprovacio = copy_from_user(buffer, mybuff, size);
-      if(comprovacio) ret = comprovacio; //error, buscar codi error;
-      else{
-        int sizeEscrit = sys_write_console(mybuff, size);
-        numbytes += sizeEscrit; //error, buscar codi error;
+    else /* No more free pages left. Deallocate everything */
+    {
+      /* Deallocate allocated pages. Up to pag. */
+      for (i=0; i<pag; i++)
+      {
+        free_frame(get_frame(process_PT, PAG_LOG_INIT_DATA_P0+i));
+        del_ss_pag(process_PT, PAG_LOG_INIT_DATA_P0+i);
       }
-
-      if(ret == 0){
-        if (numbytes != sizeOriginal && ret == 0) ret = -1; //buscar codi error
-        else ret = numbytes;
-      }      
+      /* Deallocate task_struct */
+      list_add_tail(lhcurrent, &freequeue);
+      
+      /* Return error */
+      return -EAGAIN; 
     }
-    
-  }else ret = -1; //buscar error
+  }
 
-  return ret;
+  /* Copy parent's SYSTEM and CODE to child. */
+  page_table_entry *parent_PT = get_PT(current());
+  for (pag=0; pag<NUM_PAG_KERNEL; pag++)
+  {
+    set_ss_pag(process_PT, pag, get_frame(parent_PT, pag));
+  }
+  for (pag=0; pag<NUM_PAG_CODE; pag++)
+  {
+    set_ss_pag(process_PT, PAG_LOG_INIT_CODE_P0+pag, get_frame(parent_PT, PAG_LOG_INIT_CODE_P0+pag));
+  }
+  /* Copy parent's DATA to child. We will use TOTAL_PAGES-1 as a temp logical page to map to */
+  for (pag=NUM_PAG_KERNEL+NUM_PAG_CODE; pag<NUM_PAG_KERNEL+NUM_PAG_CODE+NUM_PAG_DATA; pag++)
+  {
+    /* Map one child page to parent's address space. */
+    set_ss_pag(parent_PT, pag+NUM_PAG_DATA, get_frame(process_PT, pag));
+    copy_data((void*)(pag<<12), (void*)((pag+NUM_PAG_DATA)<<12), PAGE_SIZE);
+    del_ss_pag(parent_PT, pag+NUM_PAG_DATA);
+  }
+  /* Deny access to the child's memory space */
+  set_cr3(get_DIR(current()));
+  
+  uchild->task.PID=++global_PID;
+  uchild->task.state=ST_READY;
+  
+  int register_ebp;		/* frame pointer */
+  /* Map Parent's ebp to child's stack */
+  __asm__ __volatile__ (
+    "movl %%ebp, %0\n\t"
+      : "=g" (register_ebp)
+      : );
+  register_ebp=(register_ebp - (int)current()) + (int)(uchild);
 
+  uchild->task.register_esp=register_ebp + sizeof(DWord);
+  
+  DWord temp_ebp=*(DWord*)register_ebp;
+  /* Prepare child stack for context switch */
+  uchild->task.register_esp-=sizeof(DWord);
+  *(DWord*)(uchild->task.register_esp)=(DWord)&ret_from_fork;
+  uchild->task.register_esp-=sizeof(DWord);
+  *(DWord*)(uchild->task.register_esp)=temp_ebp;
+
+  /* Set stats to 0 */
+  init_stats(&(uchild->task.p_stats));
+
+  /* Queue child process into readyqueue */
+  uchild->task.state=ST_READY;
+  list_add_tail(&(uchild->task.list), &readyqueue);
+  
+  return uchild->task.PID;
 }
 
-int sys_gettime(){ 
+#define TAM_BUFFER 512
+
+int sys_write(int fd, char *buffer, int nbytes) {
+char localbuffer [TAM_BUFFER];
+int bytes_left;
+int ret;
+
+	if ((ret = check_fd(fd, ESCRIPTURA)))
+		return ret;
+	if (nbytes < 0)
+		return -EINVAL;
+	if (!access_ok(VERIFY_READ, buffer, nbytes))
+		return -EFAULT;
+	
+	bytes_left = nbytes;
+	while (bytes_left > TAM_BUFFER) {
+		copy_from_user(buffer, localbuffer, TAM_BUFFER);
+		ret = sys_write_console(localbuffer, TAM_BUFFER);
+		bytes_left-=ret;
+		buffer+=ret;
+	}
+	if (bytes_left > 0) {
+		copy_from_user(buffer, localbuffer,bytes_left);
+		ret = sys_write_console(localbuffer, bytes_left);
+		bytes_left-=ret;
+	}
+	return (nbytes-bytes_left);
+}
+
+
+extern int zeos_ticks;
+
+int sys_gettime()
+{
   return zeos_ticks;
 }
 
+void sys_exit()
+{
+  int i;
+
+  page_table_entry *process_PT = get_PT(current());
+
+  // Deallocate all the propietary physical pages
+  for (i=0; i<NUM_PAG_DATA; i++)
+  {
+    free_frame(get_frame(process_PT, PAG_LOG_INIT_DATA_P0+i));
+    del_ss_pag(process_PT, PAG_LOG_INIT_DATA_P0+i);
+  }
+  
+  /* Free task_struct */
+  list_add_tail(&(current()->list), &freequeue);
+  
+  current()->PID=-1;
+  
+  /* Restarts execution of the next process */
+  sched_next_rr();
+}
+
+/* System call to force a task switch */
+int sys_yield()
+{
+  force_task_switch();
+  return 0;
+}
+
+extern int remaining_quantum;
+
+int sys_get_stats(int pid, struct stats *st)
+{
+  int i;
+  
+  if (!access_ok(VERIFY_WRITE, st, sizeof(struct stats))) return -EFAULT; 
+  
+  if (pid<0) return -EINVAL;
+  for (i=0; i<NR_TASKS; i++)
+  {
+    if (task[i].task.PID==pid)
+    {
+      task[i].task.p_stats.remaining_ticks=remaining_quantum;
+      copy_to_user(&(task[i].task.p_stats), st, sizeof(struct stats));
+      return 0;
+    }
+  }
+  return -ESRCH; /*ESRCH */
+}

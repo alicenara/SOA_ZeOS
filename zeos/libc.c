@@ -8,11 +8,6 @@
 
 int errno;
 
-void perror(){
-  //fer codis error
-  write(1,"Error",5);
-}
-
 void itoa(int a, char *b)
 {
   int i, i1;
@@ -48,66 +43,103 @@ int strlen(char *a)
   return i;
 }
 
-int write (int fd, char * buffer, int size){
-  int ret;
+void perror()
+{
+  char buffer[256];
+
+  itoa(errno, buffer);
+
+  write(1, buffer, strlen(buffer));
+}
+
+int write(int fd, char *buffer, int size)
+{
+  int result;
   
-  __asm__("int $0x80"
-     : "=a" (ret)
-     : "b" (fd), "c" (buffer), "d" (size), "a" (4)
-     );
-
-  if(ret < 0){
-    errno = ret;
-    ret = -1;
+  __asm__ __volatile__ (
+	"int $0x80\n\t"
+	: "=a" (result)
+	: "a" (4), "b" (fd), "c" (buffer), "d" (size));
+  if (result<0)
+  {
+    errno = -result;
+    return -1;
   }
-
-  return ret;
+  errno=0;
+  return result;
+}
+ 
+int gettime()
+{
+  int result;
+  
+  __asm__ __volatile__ (
+	"int $0x80\n\t"
+	:"=a" (result)
+	:"a" (10) );
+  errno=0;
+  return result;
 }
 
-int gettime(){
-  int ret;
-
-  __asm__("int $0x80"
-     : "=a" (ret)
-     : "a" (10)
-     );
-
-  if(ret < 0){
-    errno = ret;
-    ret = -1;
-  }
-
-  return ret;
+int getpid()
+{
+  int result;
+  
+  __asm__ __volatile__ (
+  	"int $0x80\n\t"
+	:"=a" (result)
+	:"a" (20) );
+  errno=0;
+  return result;
 }
 
-int getpid(){
-  int ret;
-
-  __asm__("int $0x80"
-     : "=a" (ret)
-     : "a" (20)
-     );
-
-  if(ret < 0){
-    errno = ret;
-    ret = -1;
+int fork()
+{
+  int result;
+  
+  __asm__ __volatile__ (
+  	"int $0x80\n\t"
+	:"=a" (result)
+	:"a" (2) );
+  if (result<0)
+  {
+    errno = -result;
+    return -1;
   }
-
-  return ret;
+  errno=0;
+  return result;
 }
 
-int fork(){
-  int ret;
+void exit(void)
+{
+  __asm__ __volatile__ (
+  	"int $0x80\n\t"
+	:
+	:"a" (1) );
+}
 
-  __asm__("int $0x80"
-     : "=a" (ret)
-     : "a" (2)
-     );
+int yield()
+{
+  int result;
+  __asm__ __volatile__ (
+  	"int $0x80\n\t"
+	:"=a" (result)
+	:"a" (13) );
+  return result;
+}
 
-  if(ret < 0){
-    errno = ret;
-    ret = -1;
+int get_stats(int pid, struct stats *st)
+{
+  int result;
+  __asm__ __volatile__ (
+  	"int $0x80\n\t"
+	:"=a" (result)
+	:"a" (35), "b" (pid), "c" (st) );
+  if (result<0)
+  {
+    errno = -result;
+    return -1;
   }
-
-  return ret;
+  errno=0;
+  return result;
 }
