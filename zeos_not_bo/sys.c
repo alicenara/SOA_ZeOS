@@ -47,8 +47,7 @@ int sys_getpid()
 	return current()->PID;
 }
 
-//int global_PID=1000;
-int global_PID=5;
+int global_PID=1000;
 
 int ret_from_fork()
 {

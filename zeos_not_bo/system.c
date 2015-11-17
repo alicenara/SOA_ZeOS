@@ -8,7 +8,6 @@
 #include <hardware.h>
 #include <system.h>
 #include <sched.h>
-#include <schedperf.h>
 #include <mm.h>
 #include <io.h>
 #include <utils.h>
@@ -93,22 +92,12 @@ int __attribute__((__section__(".text.main")))
   /* Initialize task 1 data */
   init_task1();
 
-  /*per fer el read i tractar processos blocked */
-  zeos_console_init();
-
   /* Move user code/data now (after the page table initialization) */
   copy_data((void *) KERNEL_START + *p_sys_size, usr_main, *p_usr_size);
   
   printk("Entering user mode..."); 
   
   enable_int();
-
-  printc_xy(70,2,'P');
-  printc_xy(71,2,'i');
-  printc_xy(72,2,'d');
-  printc_xy(73,2,':');
-  printc_xy(74,2,' ');
-  printc_xy(75,2,(char)(97 + current()->PID));
   /*
    * We return from a 'theorical' call to a 'call gate' to reduce our privileges
    * and going to execute 'magically' at 'usr_main'...

@@ -6,7 +6,6 @@
 #include <hardware.h>
 #include <segment.h>
 #include <sched.h>
-#include <schedperf.h>
 #include <mm.h>
 #include <io.h>
 #include <utils.h>
@@ -110,20 +109,18 @@ int needs_sched_rr(void)
 
 void update_process_state_rr(struct task_struct *t, struct list_head *dst_queue)
 {
-  if(t->PID != 0){
-    if (t->state!=ST_RUN) list_del(&(t->list));
-    if (dst_queue!=NULL)
+  if (t->state!=ST_RUN) list_del(&(t->list));
+  if (dst_queue!=NULL)
+  {
+    list_add_tail(&(t->list), dst_queue);
+    if (dst_queue!=&readyqueue) t->state=ST_BLOCKED;
+    else
     {
-      list_add_tail(&(t->list), dst_queue);
-      if (dst_queue!=&readyqueue) t->state=ST_BLOCKED;
-      else
-      {
-        update_stats(&(current()->p_stats.system_ticks), &(current()->p_stats.elapsed_total_ticks));
-        t->state=ST_READY;
-      }
+      update_stats(&(current()->p_stats.system_ticks), &(current()->p_stats.elapsed_total_ticks));
+      t->state=ST_READY;
     }
-    else t->state=ST_RUN;
-  }  
+  }
+  else t->state=ST_RUN;
 }
 
 void sched_next_rr(void)
@@ -154,23 +151,11 @@ void sched_next_rr(void)
 
 void schedule()
 {
-  /*canviat per no triar rr per defecte */
-  /*
   update_sched_data_rr();
   if (needs_sched_rr())
   {
     update_process_state_rr(current(), &readyqueue);
     sched_next_rr();
-  }st
-  */
-
-  update_sched_data();
-  if (needs_sched())
-  {
-    update_process_state(current(), &readyqueue);
-
-    printc_xy(75,2,(char)(97 + current()->PID));
-    sched_next();
   }
 }
 
@@ -246,14 +231,14 @@ void init_sched()
 
 struct stats * get_task_stats(struct task_struct *t){  
   //returns: a pointer to the statistics field in task t
-  return (&t->p_stats);
+  return t->p_stats;
 
 }
 
 
 struct list_head *get_task_list(struct task_struct *t){  
   //returns: a pointer to the list_head field in the task t
-  return (&t->list);
+  return t->list;
 }
 
 struct task_struct* current()
@@ -328,31 +313,6 @@ void task_switch(union task_union *new)
 void force_task_switch()
 {
   update_process_state_rr(current(), &readyqueue);
-    printc_xy(75,2,(char)(97 + current()->PID));
+
   sched_next_rr();
-}
-
-void block_process(struct list_head *block_queue) {
-  struct task_struct *t = current();
-  struct stats *st = get_task_stats(t);
-
-  update_process_state(t, block_queue);
-  st->system_ticks = get_ticks()-st->elapsed_total_ticks;
-  st->elapsed_total_ticks = get_ticks();
-      printc_xy(75,2,(char)(97 + current()->PID));
-  sched_next();
-}
-
-void unblock_process(struct task_struct *blocked){
-  struct stats *st = get_task_stats(blocked);
-  struct list_head *l = get_task_list(blocked);
-
-  update_process_state(blocked, &readyqueue);
-  st->blocked_ticks += (get_ticks()-st->elapsed_total_ticks);
-  st->elapsed_total_ticks = get_ticks();
-  if (needs_sched()) {
-    update_process_state(current(), &readyqueue);
-        printc_xy(75,2,(char)(97 + current()->PID));
-    sched_next();
-  }
 }

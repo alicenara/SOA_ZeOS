@@ -1,6 +1,6 @@
-romimage: file=$BXSHARE/BIOS-bochs-latest
+#romimage: file=$BXSHARE/BIOS-bochs-latest
 megs: 16
-vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest
+#vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest
 
 floppya: 1_44=./zeos.bin, status=inserted
 boot: floppy
