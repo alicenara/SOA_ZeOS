@@ -6,7 +6,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-
+#include <sys/types.h> 
+#include <sys/socket.h>
+#include <netinet/in.h>
 
 // Create a socket and initialize it to be able to accept 
 // connections.
@@ -18,6 +20,17 @@
 int
 createServerSocket (int port)
 {
+  int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  if (sockfd < 0) return sockfd;
+         
+     bzero((char *) &serv_addr, sizeof(serv_addr));
+     
+     serv_addr.sin_family = AF_INET;
+     serv_addr.sin_addr.s_addr = INADDR_ANY;
+     serv_addr.sin_port = htons(port);
+     res = bind(sockfd, (struct sockaddr *) &serv_addr,sizeof(serv_addr)); 
+     listen(sockfd,5);
+  return res;
 }
 
 
