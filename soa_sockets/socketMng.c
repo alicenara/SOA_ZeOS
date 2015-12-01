@@ -6,9 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <sys/types.h> 
-#include <sys/socket.h>
-#include <netinet/in.h>
 
 // Create a socket and initialize it to be able to accept 
 // connections.
@@ -17,21 +14,20 @@
 // the connection
 //
 
-int
-createServerSocket (int port)
+int createServerSocket (int port)
 {
+  struct sockaddr_in serv_addr;
   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-  if (sockfd < 0) return sockfd;
-         
-     bzero((char *) &serv_addr, sizeof(serv_addr));
-     
-     serv_addr.sin_family = AF_INET;
-     serv_addr.sin_addr.s_addr = INADDR_ANY;
-     serv_addr.sin_port = htons(port);
-     res = bind(sockfd, (struct sockaddr *) &serv_addr,sizeof(serv_addr)); 
-     listen(sockfd,5);
+  if (sockfd < 0) return sockfd;         
+  
+  bzero((char *) &serv_addr, sizeof(serv_addr)); //cal perque els ultims bits de la struct han de ser 0
+  serv_addr.sin_family = AF_INET; //Family del socket
+  serv_addr.sin_addr.s_addr = INADDR_ANY;//IP de màquina on s'executa el codi
+  serv_addr.sin_port = htons(port);   // sin_port ha d'estar en network byte order i htons ho posa
+  res = bind(sockfd, (struct sockaddr *) &serv_addr,sizeof(serv_addr)); 
+  listen(sockfd,15); //el 15 es el numero de peticions pendents que si se supera el client rep un error :c
   return res;
-}
+}	
 
 
 // Returns the file descriptor associated to the connection.
@@ -39,8 +35,7 @@ createServerSocket (int port)
 // with the address of the socket for the client which is requesting the
 // connection, and the addrSize parameter with the size of that address.
 
-int
-acceptNewConnections (int socket_fd)
+int acceptNewConnections (int socket_fd)
 {
 
 }
@@ -53,8 +48,7 @@ acceptNewConnections (int socket_fd)
 // server socket to request the connection and the size of that address.
 //
 
-int
-clientConnection (char *host_name, int port)
+int clientConnection (char *host_name, int port)
 {
 
   struct sockaddr_in serv_addr;
