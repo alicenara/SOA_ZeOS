@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <sys/types.h>
 
 
 doService(int fd) {
@@ -28,6 +29,19 @@ int socket_fd = (int) fd;
 	}
 	sprintf(buff2, "Server [%d] ends service\n", getpid());
 	write(1, buff2, strlen(buff2));
+
+}
+
+doServiceFork(int fd) {
+
+	int res = fork();
+	if (res == 0){
+		char buff2[80];
+		sprintf(buff2, "Server PID =  %d \n", getpid());
+		write(1, buff2, strlen(buff2));
+		doService(fd);
+		exit(0);
+	}
 
 }
 
@@ -65,7 +79,7 @@ main (int argc, char *argv[])
 		  exit (1);
 	  }
 
-	  doService(connectionFD);
+	  doServiceFork(connectionFD);
   }
 
 }

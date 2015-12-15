@@ -24,9 +24,10 @@ int createServerSocket (int port)
   serv_addr.sin_family = AF_INET; //Family del socket
   serv_addr.sin_addr.s_addr = INADDR_ANY;//IP de màquina on s'executa el codi
   serv_addr.sin_port = htons(port);   // sin_port ha d'estar en network byte order i htons ho posa
-  res = bind(sockfd, (struct sockaddr *) &serv_addr,sizeof(serv_addr)); 
+  int res = bind(sockfd, (struct sockaddr *) &serv_addr,sizeof(serv_addr)); 
+  if (res < 0) return res;
   listen(sockfd,15); //el 15 es el numero de peticions pendents que si se supera el client rep un error :c
-  return res;
+  return sockfd;
 }	
 
 
@@ -37,7 +38,10 @@ int createServerSocket (int port)
 
 int acceptNewConnections (int socket_fd)
 {
-
+  struct sockaddr_in cli_addr;
+  int clilen = sizeof(cli_addr);
+  int acceptedsockfd = accept(socket_fd, (struct sockaddr *) &cli_addr, &clilen);
+  return acceptedsockfd;
 }
 
 // Returns the socket virtual device that the client should use to access 
